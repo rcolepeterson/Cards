@@ -25,6 +25,7 @@ function Rig(props) {
   const scroll = useScroll()
   useFrame((state, delta) => {
     ref.current.rotation.y = -scroll.offset * (Math.PI * 2) // Rotate contents
+    ref.current.rotation.z = scroll.offset * (Math.PI * 2) // Rotate helix
     state.events.update() // Raycasts every frame rather than on pointer-move
     easing.damp3(state.camera.position, [-state.pointer.x * 2, state.pointer.y + 1.5, 10], 0.3, delta) // Move camera
     state.camera.lookAt(0, 0, 0) // Look at center
@@ -32,12 +33,12 @@ function Rig(props) {
   return <group ref={ref} {...props} />
 }
 
-function Carousel({ radius = 1.4, count = 8 }) {
+function Carousel({ radius = 1.4, count = 8, height = 2 }) {
   return Array.from({ length: count }, (_, i) => (
     <Card
       key={i}
       url={`/img${Math.floor(i % 10) + 1}_.jpg`}
-      position={[Math.sin((i / count) * Math.PI * 2) * radius, 0, Math.cos((i / count) * Math.PI * 2) * radius]}
+      position={[Math.sin((i / count) * Math.PI * 2) * radius, (i / count) * height - height / 2, Math.cos((i / count) * Math.PI * 2) * radius]}
       rotation={[0, Math.PI + (i / count) * Math.PI * 2, 0]}
     />
   ))
