@@ -87,17 +87,6 @@ function Card({ url, position, rotation, ...props }) {
   })
 
   return (
-    // <Image
-    //   ref={ref}
-    //   url={url}
-    //   transparent
-    //   side={THREE.DoubleSide}
-    //   onPointerOver={pointerOver}
-    //   onPointerOut={pointerOut}
-    //   position={position}
-    //   rotation={rotation}
-    //   {...props}
-    // />
     <Image ref={ref} url={url} transparent side={THREE.DoubleSide} onPointerOver={pointerOver} onPointerOut={pointerOut} {...props}>
       <bentPlaneGeometry args={[0.08, 0.8, 0.8, 20, 20]} /> {/* Adjust geometry size */}
     </Image>
