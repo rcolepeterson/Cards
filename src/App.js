@@ -9,13 +9,13 @@ import './util'
 
 export const App = () => (
   <Canvas camera={{ position: [0, 0, 100], fov: 15 }}>
-    <fog attach="fog" args={['#a79', 8.5, 12]} />
+    <fog attach="fog" args={['#000', 8.5, 12]} />
     <ScrollControls pages={4} infinite>
       <Rig rotation={[0, 0, 0.15]}>
         <Carousel />
       </Rig>
     </ScrollControls>
-    <Environment preset="dawn" background blur={0.5} />
+    <Environment preset="sunset" background blur={0.5} />
   </Canvas>
 )
 
