@@ -33,12 +33,16 @@ function Rig(props) {
   return <group ref={ref} {...props} />
 }
 
-function Carousel({ radius = 1.4, count = 8, height = 2 }) {
+function Carousel({ radius = 1.4, count = 16, height = 2 }) {
   return Array.from({ length: count }, (_, i) => (
     <Card
       key={i}
       url={`/img${Math.floor(i % 10) + 1}_.jpg`}
-      position={[Math.sin((i / count) * Math.PI * 2) * radius, (i / count) * height - height / 2, Math.cos((i / count) * Math.PI * 2) * radius]}
+      position={[
+        Math.sin((i / count) * Math.PI * 2) * radius,
+        ((i % 2 === 0 ? 1 : -1) * height) / 2, // Alternate vertical positions for two levels
+        Math.cos((i / count) * Math.PI * 2) * radius
+      ]}
       rotation={[0, Math.PI + (i / count) * Math.PI * 2, 0]}
     />
   ))
