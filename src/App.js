@@ -10,7 +10,7 @@ import './util'
 export const App = () => (
   <Canvas camera={{ position: [0, 0, 100], fov: 15 }}>
     <fog attach="fog" args={['#000', 8.5, 12]} />
-    <ScrollControls pages={4} infinite>
+    <ScrollControls pages={4}>
       <Rig rotation={[0, 0, 0.15]}>
         <Carousel />
       </Rig>
@@ -24,22 +24,22 @@ function Rig(props) {
   const scroll = useScroll()
   useFrame((state, delta) => {
     ref.current.rotation.y = -scroll.offset * (Math.PI * 2) // Rotate contents
-    ref.current.rotation.z = scroll.offset * (Math.PI * 2) // Rotate helix
+    ref.current.position.y = scroll.offset * 5 - 1.25 // Adjust vertical movement
     state.events.update() // Raycasts every frame rather than on pointer-move
-    easing.damp3(state.camera.position, [-state.pointer.x * 2, state.pointer.y + 1.5, 10], 0.3, delta) // Move camera
+    easing.damp3(state.camera.position, [-state.pointer.x * 2, state.pointer.y + 1.5 + scroll.offset * 5 - 1.25, 10], 0.3, delta) // Adjust camera movement
     state.camera.lookAt(0, 0, 0) // Look at center
   })
   return <group ref={ref} {...props} />
 }
 
-function Carousel({ radius = 1.2, count = 16, height = 1 }) {
+function Carousel({ radius = 1.2, count = 32, height = 0.1 }) {
   return Array.from({ length: count }, (_, i) => (
     <Card
       key={i}
       url={`/img${Math.floor(i % 10) + 1}_.jpg`}
       position={[
         Math.sin((i / count) * Math.PI * 2) * radius,
-        ((i % 2 === 0 ? 1 : -1) * height) / 2, // Alternate vertical positions for two levels
+        (i / count) * height * count - (height * count) / 2, // Create a continuous spiral effect
         Math.cos((i / count) * Math.PI * 2) * radius
       ]}
       rotation={[0, Math.PI + (i / count) * Math.PI * 2, 0]}
