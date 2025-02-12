@@ -9,17 +9,32 @@ import './util'
 
 let hoveredCard = null
 
-export const App = () => (
-  <Canvas camera={{ position: [0, 0, 100], fov: 15 }}>
-    <fog attach="fog" args={['#000', 8.5, 12]} />
-    <ScrollControls pages={4}>
-      <Rig rotation={[0, 0, 0.15]}>
-        <Carousel />
-      </Rig>
-    </ScrollControls>
-    <Environment preset="sunset" background blur={0.5} />
-  </Canvas>
-)
+const imageUrls = Array.from({ length: 10 }, () => 'https://www.rcolepeterson.com/_next/image?url=%2Fimages%2FHonda_SocialOGimage.png&w=640&q=75')
+
+export const App = () => {
+  const [images, setImages] = useState(Array.from({ length: 32 }, (_, i) => imageUrls[i % 10]))
+
+  const addImage = () => {
+    setImages([...images, imageUrls[images.length % 10]])
+  }
+
+  return (
+    <>
+      {/* <button onClick={addImage} style={{ position: 'absolute', top: 20, left: 20, zIndex: 1000 }}>
+        Add Image
+      </button> */}
+      <Canvas camera={{ position: [0, 0, 100], fov: 15 }}>
+        <fog attach="fog" args={['#000', 8.5, 12]} />
+        <ScrollControls pages={4}>
+          <Rig rotation={[0, 0, 0.15]}>
+            <Carousel images={images} />
+          </Rig>
+        </ScrollControls>
+        <Environment preset="sunset" background blur={0.5} />
+      </Canvas>
+    </>
+  )
+}
 
 function Rig(props) {
   const ref = useRef()
@@ -34,14 +49,15 @@ function Rig(props) {
   return <group ref={ref} {...props} />
 }
 
-function Carousel({ radius = 1.5, count = 32, height = 0.1, gap = 0.2 }) {
-  return Array.from({ length: count }, (_, i) => {
-    const phi = (i / count) * Math.PI * 2 // Angle around the sphere
-    const theta = Math.acos(1 - (2 * (i + 0.5)) / count) // Angle from top to bottom
+function Carousel({ images = [], radius = 1.5, height = 0.1, gap = 0.2 }) {
+  // Add default value for images
+  return images.map((url, i) => {
+    const phi = (i / images.length) * Math.PI * 2 // Angle around the sphere
+    const theta = Math.acos(1 - (2 * (i + 0.5)) / images.length) // Angle from top to bottom
     const x = Math.sin(theta) * Math.cos(phi) * radius
     const y = Math.cos(theta) * radius
     const z = Math.sin(theta) * Math.sin(phi) * radius
-    return <Card key={i} url={`/img${Math.floor(i % 10) + 1}_.jpg`} position={[x, y, z]} rotation={[0, phi, 0]} />
+    return <Card key={i} url={url} position={[x, y, z]} rotation={[0, phi, 0]} />
   })
 }
 
@@ -87,7 +103,16 @@ function Card({ url, position, rotation, ...props }) {
   })
 
   return (
-    <Image ref={ref} url={url} transparent side={THREE.DoubleSide} onPointerOver={pointerOver} onPointerOut={pointerOut} {...props}>
+    <Image
+      ref={ref}
+      url={url}
+      transparent
+      side={THREE.DoubleSide}
+      onPointerOver={pointerOver}
+      onPointerOut={pointerOut}
+      position={position}
+      rotation={rotation}
+      {...props}>
       <bentPlaneGeometry args={[0.08, 0.8, 0.8, 20, 20]} /> {/* Adjust geometry size */}
     </Image>
   )
