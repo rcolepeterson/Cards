@@ -45,39 +45,58 @@ function Carousel({ radius = 1.5, count = 32, height = 0.1, gap = 0.2 }) {
   })
 }
 
-function Card({ url, position, ...props }) {
+function Card({ url, position, rotation, ...props }) {
   const ref = useRef()
-  const [hovered, setHovered] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
+  const waitingForExit = useRef(false) // Prevents switching before a full exit
 
   const pointerOver = (e) => {
     e.stopPropagation()
-    //    setHovered(true)
-    hoveredCard = ref.current
+    if (!hoveredCard && !waitingForExit.current) {
+      hoveredCard = ref.current
+      setIsHovered(true)
+    }
   }
 
   const pointerOut = () => {
-    setHovered(false)
     if (hoveredCard === ref.current) {
-      hoveredCard = null
+      waitingForExit.current = true // Prevent new hover until user fully leaves
+      setTimeout(() => {
+        hoveredCard = null
+        waitingForExit.current = false // Now allow new hovers
+        setIsHovered(false)
+      }, 500) // Short delay to ensure full exit
     }
   }
 
-  useEffect(() => {
-    if (hoveredCard === ref.current) {
-      ref.current.renderOrder = 999 // Ensures it's drawn last
-      ref.current.material.depthTest = false // Ignore depth test so it's always on top
-      ref.current.position.z += 0.1 // Slightly move forward in the Z-axis to ensure visibility
-    } else {
-      ref.current.renderOrder = 0 // Reset order
-      ref.current.material.depthTest = true // Restore depth test
-      ref.current.position.z -= 0.1 // Reset Z position
-    }
-  }, [hovered])
-
   useFrame((state, delta) => {
-    const targetScale = hovered ? 0.9 : 0.8
-    easing.damp3(ref.current.scale, targetScale, 0.1, delta) // Smooth scale animation
+    if (hoveredCard === ref.current) {
+      easing.damp3(ref.current.position, [position[0], position[1], position[2] + 0.2], 0.1, delta)
+      ref.current.renderOrder = 999
+      ref.current.material.depthTest = false
+      ref.current.lookAt(state.camera.position) // Make the card face the camera
+    } else {
+      easing.damp3(ref.current.position, position, 0.1, delta)
+      easing.dampE(ref.current.rotation, rotation, 0.1, delta) // Reset rotation
+      ref.current.renderOrder = 0
+      ref.current.material.depthTest = true
+    }
+
+    const targetScale = isHovered ? 0.9 : 0.8
+    easing.damp3(ref.current.scale, targetScale, 0.1, delta)
   })
 
-  return <Image ref={ref} url={url} transparent side={THREE.DoubleSide} onPointerOver={pointerOver} onPointerOut={pointerOut} position={position} {...props} />
+  return (
+    <Image
+      ref={ref}
+      url={url}
+      transparent
+      side={THREE.DoubleSide}
+      onPointerOver={pointerOver}
+      onPointerOut={pointerOut}
+      position={position}
+      rotation={rotation}
+      {...props}
+    />
+  )
 }
