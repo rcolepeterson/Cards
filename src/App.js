@@ -14,7 +14,6 @@ export const App = () => (
       <Rig rotation={[0, 0, 0.15]}>
         <Carousel />
       </Rig>
-      <Banner position={[0, -0.15, 0]} />
     </ScrollControls>
     <Environment preset="dawn" background blur={0.5} />
   </Canvas>
@@ -33,7 +32,7 @@ function Rig(props) {
   return <group ref={ref} {...props} />
 }
 
-function Carousel({ radius = 1.4, count = 16, height = 2 }) {
+function Carousel({ radius = 1.2, count = 16, height = 1 }) {
   return Array.from({ length: count }, (_, i) => (
     <Card
       key={i}
@@ -54,30 +53,13 @@ function Card({ url, ...props }) {
   const pointerOver = (e) => (e.stopPropagation(), hover(true))
   const pointerOut = () => hover(false)
   useFrame((state, delta) => {
-    easing.damp3(ref.current.scale, hovered ? 1.15 : 1, 0.1, delta)
+    easing.damp3(ref.current.scale, hovered ? 0.9 : 0.8, 0.1, delta) // Adjust scale for hover effect
     easing.damp(ref.current.material, 'radius', hovered ? 0.25 : 0.1, 0.2, delta)
     easing.damp(ref.current.material, 'zoom', hovered ? 1 : 1.5, 0.2, delta)
   })
   return (
     <Image ref={ref} url={url} transparent side={THREE.DoubleSide} onPointerOver={pointerOver} onPointerOut={pointerOut} {...props}>
-      <bentPlaneGeometry args={[0.1, 1, 1, 20, 20]} />
+      <bentPlaneGeometry args={[0.08, 0.8, 0.8, 20, 20]} /> {/* Adjust geometry size */}
     </Image>
-  )
-}
-
-function Banner(props) {
-  const ref = useRef()
-  const texture = useTexture('/work_.png')
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping
-  const scroll = useScroll()
-  useFrame((state, delta) => {
-    ref.current.material.time.value += Math.abs(scroll.delta) * 4
-    ref.current.material.map.offset.x += delta / 2
-  })
-  return (
-    <mesh ref={ref} {...props}>
-      <cylinderGeometry args={[1.6, 1.6, 0.14, 128, 16, true]} />
-      <meshSineMaterial map={texture} map-anisotropy={16} map-repeat={[30, 1]} side={THREE.DoubleSide} toneMapped={false} />
-    </mesh>
   )
 }
