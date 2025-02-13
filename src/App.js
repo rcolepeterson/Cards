@@ -57,7 +57,8 @@ function Carousel({ images = [], radius = 1.5, height = 0.1, gap = 0.2 }) {
     const x = Math.sin(theta) * Math.cos(phi) * radius
     const y = Math.cos(theta) * radius
     const z = Math.sin(theta) * Math.sin(phi) * radius
-    return <Card key={i} url={url} position={[x, y, z]} rotation={[0, phi, 0]} />
+    let imageURL = `/img${Math.floor(i % 10) + 1}_.jpg`
+    return <Card key={i} url={imageURL} position={[x, y, z]} rotation={[0, phi, 0]} />
   })
 }
 
