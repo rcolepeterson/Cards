@@ -27,7 +27,7 @@ export const App = () => {
         <fog attach="fog" args={['#000', 8.5, 12]} />
         <ScrollControls pages={4}>
           <Rig rotation={[0, 0, 0.15]}>
-            <Carousel images={images} />
+            <Carousel images={images} radius={2} gap={0.5} /> {/* Increase radius and gap */}
           </Rig>
         </ScrollControls>
         <Environment preset="sunset" background blur={0.5} />
@@ -49,8 +49,8 @@ function Rig(props) {
   return <group ref={ref} {...props} />
 }
 
-function Carousel({ images = [], radius = 1.5, height = 0.1, gap = 0.2 }) {
-  // Add default value for images
+function Carousel({ images = [], radius = 2, height = 0.1, gap = 0.5 }) {
+  // Increase radius and gap to spread out the images
   return images.map((url, i) => {
     const phi = (i / images.length) * Math.PI * 2 // Angle around the sphere
     const theta = Math.acos(1 - (2 * (i + 0.5)) / images.length) // Angle from top to bottom
