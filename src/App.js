@@ -54,11 +54,12 @@ function Carousel({ images = [], radius = 2, height = 0.1, gap = 0.5 }) {
   return images.map((url, i) => {
     const phi = (i / images.length) * Math.PI * 2 // Angle around the sphere
     const theta = Math.acos(1 - (2 * (i + 0.5)) / images.length) // Angle from top to bottom
-    const x = Math.sin(theta) * Math.cos(phi) * radius
-    const y = Math.cos(theta) * radius
-    const z = Math.sin(theta) * Math.sin(phi) * radius
+    const x = Math.sin(theta) * Math.cos(phi) * radius + (Math.random() - 0.5) * gap // Add random offset to x
+    const y = Math.cos(theta) * radius + (Math.random() - 0.5) * gap // Add random offset to y
+    const z = Math.sin(theta) * Math.sin(phi) * radius + (Math.random() - 0.5) * gap // Add random offset to z
+    const rotation = [Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI] // Add random rotation
     let imageURL = `/img${Math.floor(i % 10) + 1}_.jpg`
-    return <Card key={i} url={imageURL} position={[x, y, z]} rotation={[0, phi, 0]} />
+    return <Card key={i} url={imageURL} position={[x, y, z]} rotation={rotation} />
   })
 }
 
