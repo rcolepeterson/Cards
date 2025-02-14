@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import './styles.css'
-import { Logo } from '@pmndrs/branding'
+
 import { App } from './App'
 
 /*
@@ -10,15 +10,35 @@ Author: Omar Faruq Tawsif (https://sketchfab.com/omarfaruqtawsif32)
 License: CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 */
 
+function Legend() {
+  return (
+    <div style={{ fontSize: '13px', position: 'absolute', pointerEvents: 'none', top: 0, left: 0, width: '100vw', height: '100vh' }}>
+      <div style={{ position: 'absolute', top: 120, left: 40, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <div style={{ width: '12px', height: '12px', backgroundColor: 'orange' }}></div>
+          <span>category 1</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <div style={{ width: '12px', height: '12px', backgroundColor: 'lightyellow' }}></div>
+          <span>category 2</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <div style={{ width: '12px', height: '12px', backgroundColor: 'lightgreen' }}></div>
+          <span>category 3</span>
+        </div>
+      </div>
+      <a style={{ position: 'absolute', top: 40, left: 40, fontSize: '13px' }} href="#">
+        scroll up/down ...
+      </a>
+    </div>
+  )
+}
+
 function Root() {
   return (
     <>
       <App />
-      <div style={{ position: 'absolute', pointerEvents: 'none', top: 0, left: 0, width: '100vw', height: '100vh' }}>
-        <a style={{ position: 'absolute', top: 40, left: 40, fontSize: '13px' }} href="#">
-          scroll up/down ...
-        </a>
-      </div>{' '}
+      <Legend />
     </>
   )
 }
