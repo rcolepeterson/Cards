@@ -128,7 +128,7 @@ function Card({ url, position, rotation, onClick, ...props }) {
       position={position}
       rotation={rotation}
       {...props}>
-      <bentPlaneGeometry args={[0.08, 0.8, 0.8, 20, 20]} /> {/* Adjust geometry size */}
+      <planeGeometry args={[0.8, 0.8]} />{' '}
     </Image>
   )
 }
